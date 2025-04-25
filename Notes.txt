@@ -1,0 +1,18 @@
+
+
+📝 Project Setup Note:
+
+✅ Steps Completed:
+- Ran `npm init` to create `package.json`
+- Installed `nodemon` for auto-restarting the server
+- Installed `dotenv` for managing environment variables
+- Created essential files and folders:
+  - `.env`
+  - `.gitignore`
+  - `.gitkeep` inside `public/temp` to track empty directory
+  - `src/` folder for organizing backend code
+  - `Notes.txt` for project tracking
+  - `README.md` for project overview
+  - `package-lock.json` auto-generated
+  - `node_modules/` (excluded from repo via `.gitignore`)
+  
