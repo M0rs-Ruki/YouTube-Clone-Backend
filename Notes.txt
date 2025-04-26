@@ -1,14 +1,15 @@
 
 📁 Youtube-Backend-Clone
 │
-├── 📁 node_modules/              # Auto-generated dependencies (ignored by Git)
-├── 📁 public/                    # Public assets
-│   └── 📁 temp/                  # Temporary files (e.g. uploads)
+├── 📁 node_modules/             # Auto-generated dependencies (ignored by Git)
+├── 📁 public/                   # Public assets
+│   └── 📁 temp/                 # Temporary files (e.g. uploads)
 │       └── .gitkeep             # Keeps the folder tracked in Git
 │
-├── 📁 src/                       # Core source folder
-│   ├── 📁 controllers/           # Request logic & business operations
-│   ├── 📁 db/                    # Database configuration & connection
+├── 📁 src/                      # Core source folder
+│   ├── 📁 controllers/          # Request logic & business operations
+│   ├── 📁 db/
+│       └── 📁 index.js          # Database configuration & connection
 │   ├── 📁 middleware/           # Middlewares (auth, error handling, etc.)
 │   ├── 📁 models/               # Mongoose schemas/models
 │   ├── 📁 routers/              # Express routers
@@ -37,16 +38,16 @@
   server whenever you make changes to your code.
 
 🛠️ Why use nodemon?
-    Without nodemon:
-    You have to manually stop and restart your server every time you change a file.
-    With nodemon:
-    You just save the file, and it auto-restarts the server with the updated code.
-    Saves a lot of time during development.
+  Without nodemon:
+  You have to manually stop and restart your server every time you change a file.
+  With nodemon:
+  You just save the file, and it auto-restarts the server with the updated code.
+  Saves a lot of time during development.
 
 🛠️ Why use .env?
-    The .env file is used to store environment variables—settings 
-    or secrets your application needs but that shouldn't be hardcoded
-    into your codebase.
+  The .env file is used to store environment variables—settings 
+  or secrets your application needs but that shouldn't be hardcoded
+  into your codebase.
 
 🎨 What is Prettier?
   Prettier is an opinionated code formatter for JavaScript and many other languages.
@@ -70,3 +71,21 @@
   Minified files
   Large JSON files
   Anything you're not actively editing or want to leave untouched
+
+🚀 Why use Express.js?
+  Express is a fast, minimalist web framework for Node.js.
+  ✅ Benefits:
+  📦 Handles HTTP requests/responses easily
+  🛠 Lets you create APIs, routes, and middleware
+  🔁 Supports middleware for tasks like logging, validation, and error handling
+  ⚡ Very lightweight and flexible
+  🧩 Easy to extend with custom logic or third-party packages
+
+
+🐍 Why use Mongoose?
+  Mongoose is an ODM (Object Data Modeling) library for MongoDB and Node.js.
+  ✅ Benefits:
+  💾 Helps you define schemas and models for MongoDB collections
+  📐 Adds validation, middleware, and query helpers
+  🔄 Makes database interaction more structured and readable
+  🧠 Reduces direct use of MongoDB's raw query syntax
