@@ -10,8 +10,15 @@ dotenv.config({path: "./env"});
 
 
 connectDB()
-
-
+.then(() => {
+    app.lissten(process.env.PORT || 5000, () => {
+        console.log(`Server is listening on port ${process.env.PORT}`);
+    })
+})
+.catch((arr) => {
+    console.log("MongoDB connection failed", error );
+    
+})
 
 
 
