@@ -19,7 +19,8 @@
 │   └── 📁 utils/                # Utility functions & helpers
 │       └── 📄 apiError.js       # Custom API error class
 │       └── 📄 apiResponse.js    # Custom API response class
-│       └── 📄 asyncHandler.js   # Async error handling middleware
+│       └── 📄 asyncHandler.js   # Async error handling Middleware
+│       └── 📄 cloudinary.js     # Handle file uploads in your project.
 │
 │
 ├── 📄 app.js                    # main server/app file 
