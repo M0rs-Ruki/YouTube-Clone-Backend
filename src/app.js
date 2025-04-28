@@ -18,7 +18,7 @@ import cookieParser from "cookie-parser";
 const app = express()
 
 app.use(cors({
-    origin: CORA_ORIGIN,
+    origin: process.envCORA_ORIGIN,
     credentials: true
 }))
 
@@ -28,5 +28,14 @@ app.use(express.static("public"))
 app.use(cookieParser())
 
 
+// routers
 
+import userRouter from "./routers/user.routers.js";
+
+// routers declaration 
+
+app.use("/api/v1/user", userRouter)
+
+
+// http:/localhost:8080/api/v1/user
 export { app }

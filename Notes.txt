@@ -8,6 +8,7 @@
 │
 ├── 📁 src/                         # Core source folder
 │   ├── 📁 controllers/             # Request logic & business operations
+│       └── 📄 user.controller.js   # User controller file
 │   ├── 📁 db/                      # Database configuration & connection
 │       └── 📄 index.js             # Database connection file
 │   ├── 📁 middleware/              # Middlewares (auth, error handling, etc.)
@@ -16,13 +17,12 @@
 │       └── 📄 user.model.js        # User model file
 │       └── 📄 video.model.js       # Video model file
 │   ├── 📁 routers/                 # Express routers
+│       └── 📄 user.router.js       # User router file
 │   └── 📁 utils/                   # Utility functions & helpers
 │       └── 📄 apiError.js          # Custom API error class
 │       └── 📄 apiResponse.js       # Custom API response class
 │       └── 📄 asyncHandler.js      # Async error handling Middleware
 │       └── 📄 cloudinary.js        # Handle file uploads in your project.
-│
-│
 ├── 📄 app.js                       # main server/app file 
 ├── 📄 constante.js                 #  constants file 
 ├── 📄 index.js                     #  server entry point 
@@ -41,55 +41,55 @@
 📦 Project Dependencies (What Each Package Does)
 
   ➡️ 1. bcrypt
-  Purpose: Used to hash passwords securely before saving into the database.
-  When: When users sign up or log in.
-  Security: Helps protect passwords even if the database is hacked.
+    Purpose: Used to hash passwords securely before saving into the database.
+    When: When users sign up or log in.
+    Security: Helps protect passwords even if the database is hacked.
 
   ➡️ 2. cloudinary
-  Purpose: Upload and store images and videos to the Cloudinary cloud server.
-  When: When uploading profile pictures, cover images, video thumbnails, etc.
+    Purpose: Upload and store images and videos to the Cloudinary cloud server.
+    When: When uploading profile pictures, cover images, video thumbnails, etc.
 
   ➡️ 3. cookie-parser
-  Purpose: Parses cookies attached to the client's request.
-  When: Useful for authentication, refresh tokens, and session management.
+    Purpose: Parses cookies attached to the client's request.
+    When: Useful for authentication, refresh tokens, and session management.
 
   ➡️ 4. cors
-  Purpose: Stands for Cross-Origin Resource Sharing.
-  When: Allows the frontend (like React or Next.js) and backend (Node.js) to communicate safely, even if hosted on different domains.
+    Purpose: Stands for Cross-Origin Resource Sharing.
+    When: Allows the frontend (like React or Next.js) and backend (Node.js) to communicate safely, even if hosted on different domains.
 
   ➡️ 5. dotenv
-  Purpose: Load environment variables from a .env file into process.env.
-  When: When you need to hide sensitive information like database URL, secret keys, API keys.
+    Purpose: Load environment variables from a .env file into process.env.
+    When: When you need to hide sensitive information like database URL, secret keys, API keys.
 
   ➡️ 6. express
-  Purpose: Main framework to create the backend server.
-  When: For handling APIs, routes, requests, responses — it's the backbone of your app.
+    Purpose: Main framework to create the backend server.
+    When: For handling APIs, routes, requests, responses — it's the backbone of your app.
 
   ➡️ 7. jsonwebtoken
-  Purpose: For generating and verifying JSON Web Tokens (JWTs).
-  When: Used to protect routes (authentication) by checking if a token is valid.
+    Purpose: For generating and verifying JSON Web Tokens (JWTs).
+    When: Used to protect routes (authentication) by checking if a token is valid.
 
   ➡️ 8. mongoose
-  Purpose: To connect and work with MongoDB easily inside Node.js.
-  When: You define your models (users, videos, comments) and talk to MongoDB database through Mongoose.
+    Purpose: To connect and work with MongoDB easily inside Node.js.
+    When: You define your models (users, videos, comments) and talk to MongoDB database through Mongoose.
 
   ➡️ 9. mongoose-aggregate-paginate-v2
-  Purpose: Helps to paginate big data when using MongoDB aggregations.
-  When: For example, when displaying videos page by page instead of loading all at once.
+    Purpose: Helps to paginate big data when using MongoDB aggregations.
+    When: For example, when displaying videos page by page instead of loading all at once.
 
   ➡️ 10. multer
-  Purpose: Middleware to handle file uploads (images, videos) from the client side.
-  When: For uploading thumbnails, profile pictures, or video files
+    Purpose: Middleware to handle file uploads (images, videos) from the client side.
+    When: For uploading thumbnails, profile pictures, or video files
 
 🛠️ Project DevDependencies (Tools for Development Only)
 
   ➡️ 11. nodemon
-  Purpose: Automatically restarts your server when you make file changes.
-  When: While coding your project — no need to manually restart after every small change.
+    Purpose: Automatically restarts your server when you make file changes.
+    When: While coding your project — no need to manually restart after every small change.
 
   ➡️ 12. prettier
-  Purpose: Automatically formats your code — makes it neat, clean, and consistent.
-  When: Useful to keep your team (or yourself) writing code in the same style.
+    Purpose: Automatically formats your code — makes it neat, clean, and consistent.
+    When: Useful to keep your team (or yourself) writing code in the same style.
 
 🚀 Download Priority (Order It Should Install Automatically)
   npm install express mongoose dotenv cors cookie-parser bcrypt jsonwebtoken multer cloudinary mongoose-aggregate-paginate-v2
@@ -214,11 +214,36 @@
 -----------------------------------------------------------------------------------
 
 🗄️ HTTP response status codes
-  1. Informational responses (100-199)
-  2. Successful responses (200-299)
-  3. Redirection messages (300-399)
-  4. Client error responses (400-499)
-  5. Server error responses (500-599)
+  1XX → Informational responses (processing, continue).
+  2XX → Success (OK, Created, Accepted).
+  3XX → Redirection (Temporary/Permanent Redirect).
+  4XX → Client errors (Bad Request, Unauthorized, Not Found).
+  5XX → Server errors (Internal Error, Timeout).
+
+📖 Important HTTP Status Codes
+  Code	Meaning
+  100	Continue
+  102	Processing
+  200	OK
+  201	Created
+  202	Accepted
+  307	Temporary Redirect
+  308	Permanent Redirect
+  400	Bad Request
+  401	Unauthorized
+  402	Payment Required
+  404	Not Found
+  500	Internal Server Error
+  504	Gateway Timeout
+
+📡 HTTP Methods - Quick Notes
+  Method | Action           | Example Usage                          |
+  -------|------------------|----------------------------------------|
+  GET    | Read Data        | View all videos                        |
+  POST   | Create Data      | Upload a new video                     |
+  PUT    | Replace Data     | Edit and replace a full video document |
+  PATCH  | Update Partially | Change only the video title            |
+  DELETE | Remove Data      | Delete a video                         |
 
 -----------------------------------------------------------------------------------
 
@@ -288,4 +313,5 @@ In short:
   It helps build authentication systems that are fast, secure, and scalable.
 
 -----------------------------------------------------------------------------------
+
 
