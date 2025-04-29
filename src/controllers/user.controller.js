@@ -28,8 +28,6 @@ import { apiResponse } from "../utils/apiResponse.js";
 
 
 
-console.log("user.controller.js");
-
 const registerUser = asyncHandler( async (req, res) => {
 
     // get user details from frontend
@@ -43,7 +41,8 @@ const registerUser = asyncHandler( async (req, res) => {
     // return response 
 
     const { username, email, password, fullName } = req.body
-    console.log( email, password);
+    console.log(username, email, password, fullName);
+    
 
     // validation - not empty
     // if(fullName == "") {
@@ -66,7 +65,13 @@ const registerUser = asyncHandler( async (req, res) => {
 
     // check for images , and check for cover images
     const avatarLocalPath = req.files?.avatar[0]?.path
-    const coverImageLocalPath = req.files?.coverImage[0]?.path
+    // const coverImageLocalPath = req.files?.coverImage[0]?.path
+
+    let coverImageLocalPath;
+    if (req.field && Array.isArray(req.files.coverImage) 
+        && req.files.coverImage.length > 0 ) {
+        coverImageLocalPath = req.files.coverImage[0].path
+    }
 
     if(!avatarLocalPath) {
         throw new apiError(400, "Avatar is required")
@@ -79,7 +84,7 @@ const registerUser = asyncHandler( async (req, res) => {
         throw new apiError(400, "Avatar upload failed")
     }
     // create user object - create entry in DB 
-    const user = awaitUser.create({
+    const user = await User.create({
         fullName,
         avatar: avatar.url,
         coverImage: coverImage?.url || "",
@@ -96,7 +101,7 @@ const registerUser = asyncHandler( async (req, res) => {
         throw new apiError(500, "User creation failed")
     }
     // return response
-    return res.statud(201).json(
+    return res.status(201).json(
         new apiResponse(200, "User created successfully", createdUser)
     )
 

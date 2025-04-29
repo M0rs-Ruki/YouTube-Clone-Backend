@@ -18,11 +18,11 @@
     // 5. Server error responses (500-599)
 
 class apiResponse{
-    constructor(statuscode, message = "success", data){
-        this.statuscode = statuscode;
+    constructor(statusCode, message = "success", data){
+        this.statusCode = statusCode;
         this.message = message;
         this.data = data;
-        this.success = statuscode === 400 ? false: true
+        this.success = statusCode === 400 ? false: true
     }
 }
 
