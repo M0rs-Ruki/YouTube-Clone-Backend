@@ -26,7 +26,13 @@ import { upload } from "../middleware/multer.middleware.js"
 import { loginUser } from "../controllers/user.controller.js";
 import { verifyJWT } from "../middleware/auth.middleware.js";
 import { refereshAcessToken } from "../controllers/user.controller.js";
-
+import { changeCurrentPassword } from "../controllers/user.controller.js";
+import { getCurrentUser } from "../controllers/user.controller.js";
+import { updateAvatarDetails } from "../controllers/user.controller.js";
+import { updateAccountDetails } from "../controllers/user.controller.js";
+import { updateCoverImageDetails } from "../controllers/user.controller.js";
+import { getUserChannelProfile } from "../controllers/user.controller.js";
+import { getWhatHistory } from "../controllers/user.controller.js";
 
 
 const router = Router()
@@ -47,5 +53,15 @@ router.route("/login").post(loginUser)
 // secured routes
 router.route("/logout").post( verifyJWT ,logoutUser)
 router.route("/refresh-token").post(refereshAcessToken)
+router.route("/change-password").post(verifyJWT,changeCurrentPassword)
+router.route("/current-user").get(verifyJWT,getCurrentUser)
+router.route("/update-account").patch(verifyJWT,updateAccountDetails)
+
+router.route("/avatar").patch(verifyJWT,upload.single("avatar"),updateAvatarDetails)
+router.route("/cover-image").patch(verifyJWT,upload.single("coverImage"),updateCoverImageDetails)
+
+router.route("/c/:userId").get(verifyJWT,getUserChannelProfile)
+router.route("/watch-history").get(verifyJWT,getWhatHistory)
+
 
 export default router;
