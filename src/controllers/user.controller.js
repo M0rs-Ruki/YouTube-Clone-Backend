@@ -26,7 +26,6 @@ import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { apiResponse } from "../utils/apiResponse.js";
 import jwt from "jsonwebtoken"
-import { response } from "express";
 
 
 const generateAccessAndRefereshToken = async(userId) => {
@@ -44,7 +43,6 @@ const generateAccessAndRefereshToken = async(userId) => {
         throw new apiError(500, "Token generation failed")
     }
 }
-
 
 
 const registerUser = asyncHandler( async (req, res) => {
@@ -125,6 +123,7 @@ const registerUser = asyncHandler( async (req, res) => {
 
 })
 
+
 const loginUser = asyncHandler( async (req, res) => {
 
     // gat data from req.body
@@ -179,6 +178,7 @@ const loginUser = asyncHandler( async (req, res) => {
 
 })
 
+
 const logoutUser = asyncHandler( async (req, res) => {
 
     await User.findByIdAndUpdate(req.user._id, 
@@ -195,6 +195,7 @@ const logoutUser = asyncHandler( async (req, res) => {
     .clearCookie("refreshToken", options)
     .json(new apiResponse(200,{}, "Logout successful"))
 })
+
 
 const refereshAcessToken = asyncHandler( async (req, res) => {
 
@@ -233,6 +234,7 @@ try {
 }
 })
 
+
 const createCurrentPassword = asyncHandler( async (req, res) => {
     const { oldPassword, newPassword } = req.body
 
@@ -251,6 +253,7 @@ const createCurrentPassword = asyncHandler( async (req, res) => {
 
 })
 
+
 const getCurrentUser = asyncHandler( async (req, res) => {
 
     return res
@@ -258,6 +261,7 @@ const getCurrentUser = asyncHandler( async (req, res) => {
     .json(new apiResponse(200, req.user, "User fetched successfully"))
 
 })
+
 
 const updateAccountDetails = asyncHandler( async (req, res) => {
 
@@ -279,6 +283,7 @@ const updateAccountDetails = asyncHandler( async (req, res) => {
     .json(new apiResponse(200, user, "Account details updated successfully"))
 
 })
+
 
 const updateAvatarDetails = asyncHandler( async (req, res) => {
 
@@ -310,6 +315,7 @@ const updateAvatarDetails = asyncHandler( async (req, res) => {
 
 })
 
+
 const updateCoverImageDetails = asyncHandler( async (req, res) => {
 
     const coverImageLocalPath = req.file?.path
@@ -340,7 +346,75 @@ const updateCoverImageDetails = asyncHandler( async (req, res) => {
 
 })
 
+const getUserChannelProfile = asyncHandler( async (req, res) => {
 
+    const { userId } = req.params
+
+    if (!userId?.trim()) {
+        throw new apiError(400, "User id is missing")
+    }
+
+    const channel = await User.aggregate([
+        {
+            $match: { usarname: userId?.toLowerCase() }
+        },
+        {
+            $lookup: {
+                from: "subsciption",
+                localField: "_id",
+                foreignField: "channel",
+                as: "subsciptions"
+
+            }
+        },
+        {
+            $lookup: {
+                from: "subsciption",
+                localField: "_id",
+                foreignField: "subsciption",
+                as: "SubscribedTo"
+            }
+        },
+        {
+            $addFields: {
+                SubscriberCount: {
+                    $size: "$subsciptions"
+                },
+                SubscribedToCount: {
+                    $size: "$SubscribedTo"
+                },
+                isSubscribed: {
+                    $cond: {
+                        if:{$in: [req.user?._id, "$subsciptions.subscriber"]},
+                        then: true,
+                        else: false
+                    }
+                }
+            }
+        },
+        {
+            $project: {
+                fullName: 1,
+                username: 1,
+                SubscriberCount: 1,
+                SubscribedToCount: 1,
+                isSubscribed: 1, 
+                avatar: 1,
+                coverImage: 1,
+                email: 1,
+            }
+        }
+
+    ])
+    if (!channel?.length) {
+        throw new apiError(404, "Channel not found")
+
+    }
+
+    return res
+    .status(200)
+    .json(new apiResponse(200, channel[0], "Channel fetched successfully"))
+})
 
 export { 
     registerUser,
@@ -352,4 +426,5 @@ export {
     updateAccountDetails,
     updateAvatarDetails,
     updateCoverImageDetails,
+    getUserChannelProfile
 }
