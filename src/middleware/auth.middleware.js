@@ -13,7 +13,7 @@
 //     auth.middleware.js = Verifies user JWT token and protects private routes.
 
 
-import { asyncHandler } from "../utils/asyncHandler";
+import { asyncHandler } from "../utils/asyncHandler.js";
 import { apiError } from "../utils/apiError.js"
 import jwt from "jsonwebtoken"
 import { User } from "../models/user.model.js"

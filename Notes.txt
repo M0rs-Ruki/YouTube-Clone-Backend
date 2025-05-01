@@ -12,6 +12,7 @@
 │   ├── 📁 db/                      # Database configuration & connection
 │       └── 📄 index.js             # Database connection file
 │   ├── 📁 middleware/              # Middlewares (auth, error handling, etc.)
+│       └── 📄 auth.middleware.js    # Authentication middleware
 │       └── 📄 multer.middleware.js # Multer middleware for file uploads
 │   ├── 📁 models/                  # Mongoose schemas/models
 │       └── 📄 user.model.js        # User model file

@@ -25,6 +25,7 @@ import { apiError } from "../utils/apiError.js";
 import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { apiResponse } from "../utils/apiResponse.js";
+import jwt from "jsonwebtoken"
 
 
 const generateAccessAndRefereshToken = async(userId) => {
@@ -58,7 +59,6 @@ const registerUser = asyncHandler( async (req, res) => {
     // return response 
 
     const { username, email, password, fullName } = req.body
-    console.log(username, email, password, fullName);
     
 
     // validation - not empty
@@ -77,7 +77,7 @@ const registerUser = asyncHandler( async (req, res) => {
         $or:[{username},{email}]
     })
     if(existingUser) {
-        throw apiError(409, "User already exists")
+        throw new apiError(409, "User already exists")
     }
 
     // check for images , and check for cover images
@@ -85,10 +85,10 @@ const registerUser = asyncHandler( async (req, res) => {
     // const coverImageLocalPath = req.files?.coverImage[0]?.path
 
     let coverImageLocalPath;
-    if (req.field && Array.isArray(req.files.coverImage) 
-        && req.files.coverImage.length > 0 ) {
-        coverImageLocalPath = req.files.coverImage[0].path
+    if (req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0) {
+        coverImageLocalPath = req.files.coverImage[0].path;
     }
+    
 
     if(!avatarLocalPath) {
         throw new apiError(400, "Avatar is required")
@@ -138,11 +138,11 @@ const loginUser = asyncHandler( async (req, res) => {
     const { email, username, password } = req.body
 
     // username or email
-    if (!username || !email) {
+    if (!(username || email)) {
         throw new apiError(400, "Username or email is required")
     }
 
-    // find the user
+    // find the user    
     const user = await User.findOne({
         $or: [{ username }, { email }]
     })
@@ -195,8 +195,47 @@ const logoutUser = asyncHandler( async (req, res) => {
     .json(new apiResponse(200,{}, "Logout successful"))
 })
 
+const refereshAcessToken = asyncHandler( async (req, res) => {
+
+    const incomingRefreshToken = req.cookeies.refreshToken || req.body.refreshToken
+
+    if(!incomingRefreshToken) {
+        throw new apiError(401, "Unauthorized access")
+
+    }
+
+try {
+        const decodedToken = jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET)
+    
+        const user = await User.findById(decodedToken?._id)
+    
+        if (!user) {
+            throw new apiError(404, "User not found")
+        }
+        
+        if (incomingRefreshToken !== user?.refreshToken) {
+            throw new apiError(401, "Refresh Token is not valid")
+        }
+        const options = {
+            httpOnly: true,
+            secure: true,
+        }
+        const { accessToken, newrefreshToken } = await generateAccessAndRefereshToken(user._id)
+    
+        return res
+        .status(200)
+        .cookeie("accessToken", accessToken, options)
+        .cookeie("refreshToken", newrefreshToken, options)
+        .json(new apiResponse(200, {user, accessToken, newrefreshToken}, "Access token refreshed successfully"))
+} catch (error) {
+    throw new apiError(401, error?.message || "Unauthorized access")
+}
+})
+
+
 export { 
     registerUser,
     loginUser,
-    logoutUser
- }
+    logoutUser,
+    refereshAcessToken
+}
