@@ -232,10 +232,39 @@ try {
 }
 })
 
+const createCurrentPassword = asyncHandler( async (req, res) => {
+    const { oldPassword, newPassword } = req.body
+
+    const user = await User.findById(req.user._id).select("+password")
+    const ispasswordCorrect = await user.isPasswordCorrect(oldPassword)
+    if (!ispasswordCorrect) {
+        throw new apiError(401, "Invalid credentials")
+    }
+    user.password = newPassword
+    await user.save({validateBeforeSave: false})
+    
+    return res
+    .status(200)
+    .json(new apiResponse(200, {}, "Password updated successfully"))
+
+
+})
+
+const getCurrentUser = asyncHandler( async (req, res) => {
+
+    return res
+    .status(200)
+    .json(new apiResponse(200, req.user, "User fetched successfully"))
+
+})
+
+
 
 export { 
     registerUser,
     loginUser,
     logoutUser,
-    refereshAcessToken
+    refereshAcessToken,
+    createCurrentPassword,
+    getCurrentUser,
 }

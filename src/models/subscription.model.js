@@ -11,4 +11,6 @@ const subsciption = new Schema({
 },{timestamps: true})
 
 
+
+
 export const Subsciption = mongoose.model('Subsciption', subsciption)
